@@ -11,9 +11,6 @@ importers:
       '@astrojs/react':
         specifier: ^4.4.2
         version: 4.4.2(@types/node@24.10.1)(@types/react-dom@19.2.3(@types/react@19.2.7))(@types/react@19.2.7)(jiti@2.6.1)(lightningcss@1.30.2)(react-dom@19.2.1(react@19.2.1))(react@19.2.1)
-      '@fontsource/sarpanch':
-        specifier: ^5.2.7
-        version: 5.2.7
       '@fontsource/space-grotesk':
         specifier: ^5.2.10
         version: 5.2.10
@@ -324,9 +321,6 @@ packages:
     engines: {node: '>=18'}
     cpu: [x64]
     os: [win32]
-
-  '@fontsource/sarpanch@5.2.7':
-    resolution: {integrity: sha512-aOZauevF/t2ZGbOvuCvlnSiW1BPFljCL+/8it6U6SuKPcApr2idtHN0u5OlfoLpTgyZFZEeh/aEZKaJW7g/oKA==}
 
   '@fontsource/space-grotesk@5.2.10':
     resolution: {integrity: sha512-XNXEbT74OIITPqw2H6HXwPDp85fy43uxfBwFR5PU+9sLnjuLj12KlhVM9nZVN6q6dlKjkuN8JisW/OBxwxgUew==}
@@ -2221,8 +2215,6 @@ snapshots:
 
   '@esbuild/win32-x64@0.25.12':
     optional: true
-
-  '@fontsource/sarpanch@5.2.7': {}
 
   '@fontsource/space-grotesk@5.2.10': {}
 

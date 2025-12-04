@@ -9,6 +9,8 @@
     height: number;
     mouseX: number;
     mouseY: number;
+    rotationX: number;
+    rotationY: number;
 
     constructor() {
       this.canvas = document.getElementById('particle-canvas') as HTMLCanvasElement;
@@ -18,6 +20,8 @@
       this.height = window.innerHeight;
       this.mouseX = 0;
       this.mouseY = 0;
+      this.rotationX = 0;
+      this.rotationY = 0;
 
       this.init();
       this.animate();
@@ -26,10 +30,20 @@
 
     init() {
       this.resize();
-      // Create particles
-      const particleCount = Math.min(window.innerWidth * 0.1, 150); // Responsive count
+      // Create particles in a sphere
+      const particleCount = Math.min(window.innerWidth < 768 ? 400 : 800); 
+      const radius = Math.min(this.width, this.height) * 0.35;
+
       for (let i = 0; i < particleCount; i++) {
-        this.particles.push(new Particle(this.width, this.height));
+        // Golden Angle distribution for even sphere coverage
+        const phi = Math.acos(-1 + (2 * i) / particleCount);
+        const theta = Math.sqrt(particleCount * Math.PI) * phi;
+
+        const x = radius * Math.cos(theta) * Math.sin(phi);
+        const y = radius * Math.sin(theta) * Math.sin(phi);
+        const z = radius * Math.cos(phi);
+
+        this.particles.push(new Particle(x, y, z));
       }
     }
 
@@ -38,47 +52,96 @@
       this.height = window.innerHeight;
       this.canvas.width = this.width;
       this.canvas.height = this.height;
+      
+      // Re-initialize on resize to adjust radius
+      this.particles = [];
+      const particleCount = Math.min(window.innerWidth < 768 ? 400 : 800);
+      const radius = Math.min(this.width, this.height) * 0.35;
+
+      for (let i = 0; i < particleCount; i++) {
+        const phi = Math.acos(-1 + (2 * i) / particleCount);
+        const theta = Math.sqrt(particleCount * Math.PI) * phi;
+
+        const x = radius * Math.cos(theta) * Math.sin(phi);
+        const y = radius * Math.sin(theta) * Math.sin(phi);
+        const z = radius * Math.cos(phi);
+
+        this.particles.push(new Particle(x, y, z));
+      }
     }
 
     addEventListeners() {
       window.addEventListener('resize', () => this.resize());
       window.addEventListener('mousemove', (e) => {
-        this.mouseX = e.clientX;
-        this.mouseY = e.clientY;
+        // Normalize mouse position to -1 to 1
+        this.mouseX = (e.clientX / this.width) * 2 - 1;
+        this.mouseY = (e.clientY / this.height) * 2 - 1;
       });
     }
 
     animate() {
       this.ctx.clearRect(0, 0, this.width, this.height);
       
+      // Base rotation speed
+      this.rotationY += 0.003;
+      this.rotationX += 0.001;
+
+      // Add mouse interaction to rotation
+      const targetRotationY = this.rotationY + (this.mouseX * 0.05);
+      const targetRotationX = this.rotationX + (-this.mouseY * 0.05);
+
+      // Center of screen
+      const cx = this.width * 0.75; // Shift to right side (75%)
+      const cy = this.height / 2;
+
+      // Sort particles by Z depth for correct rendering order
+      this.particles.sort((a, b) => b.projectedZ - a.projectedZ);
+
       this.particles.forEach(particle => {
-        particle.update(this.mouseX, this.mouseY);
+        particle.rotate(0.001 - (this.mouseY * 0.01), 0.003 + (this.mouseX * 0.01));
+        particle.project(this.width, this.height, cx, cy);
         particle.draw(this.ctx);
       });
 
-      // Draw connections
-      this.drawConnections();
+      // Draw connections between close particles
+      this.drawConnections(cx, cy);
 
       requestAnimationFrame(() => this.animate());
     }
 
-    drawConnections() {
-      const maxDistance = 150;
-      for (let i = 0; i < this.particles.length; i++) {
-        for (let j = i + 1; j < this.particles.length; j++) {
-          const dx = this.particles[i].x - this.particles[j].x;
-          const dy = this.particles[i].y - this.particles[j].y;
-          const distance = Math.sqrt(dx * dx + dy * dy);
+    drawConnections(cx: number, cy: number) {
+      const maxDistance = 40; // Connection distance threshold
+      
+      // Only connect particles that are close in 3D space AND relatively close to front
+      // Optimization: check fewer particles or use spatial partitioning if needed
+      // For now, simple distance check on projected coordinates is faster but less accurate 3D
+      // Let's do a hybrid: only connect if z-index is close
+      
+      this.ctx.lineWidth = 0.5;
 
-          if (distance < maxDistance) {
-            const opacity = 1 - (distance / maxDistance);
-            this.ctx.beginPath();
-            this.ctx.strokeStyle = `rgba(59, 130, 246, ${opacity * 0.2})`; // Titanium Blue with low opacity
-            this.ctx.lineWidth = 1;
-            this.ctx.moveTo(this.particles[i].x, this.particles[i].y);
-            this.ctx.lineTo(this.particles[j].x, this.particles[j].y);
-            this.ctx.stroke();
-          }
+      for (let i = 0; i < this.particles.length; i++) {
+        const p1 = this.particles[i];
+        // Skip particles that are too far back or clipped
+        if (p1.z < -500 || p1.alpha <= 0) continue;
+
+        // Check only a subset of neighbors to save performance
+        for (let j = i + 1; j < Math.min(i + 15, this.particles.length); j++) {
+            const p2 = this.particles[j];
+            
+            const dx = p1.projectedX - p2.projectedX;
+            const dy = p1.projectedY - p2.projectedY;
+            const dist = Math.sqrt(dx*dx + dy*dy);
+
+            if (dist < maxDistance) {
+                const alpha = (1 - dist / maxDistance) * p1.alpha * 0.5;
+                if (alpha > 0) {
+                    this.ctx.beginPath();
+                    this.ctx.strokeStyle = `rgba(96, 165, 250, ${alpha})`;
+                    this.ctx.moveTo(p1.projectedX, p1.projectedY);
+                    this.ctx.lineTo(p2.projectedX, p2.projectedY);
+                    this.ctx.stroke();
+                }
+            }
         }
       }
     }
@@ -87,53 +150,63 @@
   class Particle {
     x: number;
     y: number;
-    vx: number;
-    vy: number;
+    z: number;
+    projectedX: number;
+    projectedY: number;
+    projectedZ: number;
     size: number;
-    baseX: number;
-    baseY: number;
-    density: number;
+    alpha: number;
 
-    constructor(width: number, height: number) {
-      this.x = Math.random() * width;
-      this.y = Math.random() * height;
-      this.vx = (Math.random() - 0.5) * 0.5;
-      this.vy = (Math.random() - 0.5) * 0.5;
-      this.size = Math.random() * 2 + 1;
-      this.baseX = this.x;
-      this.baseY = this.y;
-      this.density = (Math.random() * 30) + 1;
+    constructor(x: number, y: number, z: number) {
+      this.x = x;
+      this.y = y;
+      this.z = z;
+      this.projectedX = 0;
+      this.projectedY = 0;
+      this.projectedZ = 0;
+      this.size = 1.5;
+      this.alpha = 1;
     }
 
-    update(mouseX: number, mouseY: number) {
-      this.x += this.vx;
-      this.y += this.vy;
+    rotate(angleX: number, angleY: number) {
+      // Rotate around X
+      const cosX = Math.cos(angleX);
+      const sinX = Math.sin(angleX);
+      const y1 = this.y * cosX - this.z * sinX;
+      const z1 = this.z * cosX + this.y * sinX;
 
-      // Mouse interaction
-      const dx = mouseX - this.x;
-      const dy = mouseY - this.y;
-      const distance = Math.sqrt(dx * dx + dy * dy);
-      const forceDirectionX = dx / distance;
-      const forceDirectionY = dy / distance;
-      const maxDistance = 100;
-      const force = (maxDistance - distance) / maxDistance;
+      // Rotate around Y
+      const cosY = Math.cos(angleY);
+      const sinY = Math.sin(angleY);
+      const x2 = this.x * cosY - z1 * sinY;
+      const z2 = z1 * cosY + this.x * sinY;
 
-      if (distance < maxDistance) {
-        this.x -= forceDirectionX * force * this.density;
-        this.y -= forceDirectionY * force * this.density;
-      }
+      this.x = x2;
+      this.y = y1;
+      this.z = z2;
+    }
 
-      // Screen wrapping
-      if (this.x < 0) this.x = window.innerWidth;
-      if (this.x > window.innerWidth) this.x = 0;
-      if (this.y < 0) this.y = window.innerHeight;
-      if (this.y > window.innerHeight) this.y = 0;
+    project(width: number, height: number, cx: number, cy: number) {
+      const perspective = 800;
+      const scale = perspective / (perspective + this.z);
+      
+      this.projectedX = cx + this.x * scale;
+      this.projectedY = cy + this.y * scale;
+      this.projectedZ = this.z; // Store for sorting
+      
+      // Scale size by perspective
+      this.size = Math.max(0.5, 1.5 * scale);
+      
+      // Fade out back particles
+      this.alpha = Math.min(1, Math.max(0.1, (scale - 0.5) * 2));
     }
 
     draw(ctx: CanvasRenderingContext2D) {
+      if (this.alpha <= 0) return;
+      
       ctx.beginPath();
-      ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-      ctx.fillStyle = 'rgba(96, 165, 250, 0.8)'; // Titanium Glow
+      ctx.arc(this.projectedX, this.projectedY, this.size, 0, Math.PI * 2);
+      ctx.fillStyle = `rgba(96, 165, 250, ${this.alpha})`; // Titanium Blue
       ctx.fill();
     }
   }
@@ -142,7 +215,6 @@
   document.addEventListener('astro:page-load', () => {
     const canvas = document.getElementById('particle-canvas');
     if (canvas) {
-        // Check if instance already exists to prevent duplicates
         if (!(window as any).particleSystemInstance) {
              (window as any).particleSystemInstance = new ParticleSystem();
         }

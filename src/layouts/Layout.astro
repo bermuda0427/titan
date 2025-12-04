@@ -22,52 +22,65 @@ const { title } = Astro.props;
 		<title>{title} | 鈦宇數位 Titan Digital</title>
 		<ClientRouter />
 	</head>
-	<body class="bg-void text-starlight overflow-x-hidden selection:bg-titanium selection:text-white">
-		<div class="fixed inset-0 z-[-1] bg-[url('/images/hero-bg.png')] bg-cover bg-center opacity-20 pointer-events-none mix-blend-screen"></div>
-		<div class="fixed inset-0 z-[-1] bg-gradient-to-b from-void via-transparent to-void pointer-events-none"></div>
+	<body class="bg-void text-starlight antialiased">
+		<!-- Ambient Background Glow -->
+        <div class="fixed top-0 left-0 w-full h-full overflow-hidden pointer-events-none z-[-1]">
+            <div class="absolute top-[-10%] left-[-10%] w-[50vw] h-[50vw] bg-titanium/10 rounded-full blur-[150px] animate-pulse-slow"></div>
+            <div class="absolute bottom-[-10%] right-[-10%] w-[40vw] h-[40vw] bg-horizon/10 rounded-full blur-[150px] animate-pulse-slow" style="animation-delay: 2s;"></div>
+        </div>
 		
-		<nav class="fixed top-0 w-full z-50 glass-panel border-b border-white/5 px-6 py-4">
-			<div class="max-w-7xl mx-auto flex justify-between items-center">
-				<a href="/" class="text-2xl font-display font-bold tracking-wider text-white hover:text-titanium transition-colors duration-300">
-					TITAN<span class="text-titanium">.DIGITAL</span>
+		<nav class="fixed top-0 w-full z-50 px-6 py-6 mix-blend-difference text-white">
+			<div class="max-w-[1920px] mx-auto flex justify-between items-center">
+				<a href="/" class="text-3xl font-display font-bold tracking-widest hover:opacity-80 transition-opacity">
+					TITAN
 				</a>
-				<div class="hidden md:flex space-x-8 font-sans text-sm tracking-widest uppercase">
-					<a href="/services" class="hover:text-titanium transition-colors duration-300">Services</a>
-					<a href="/portfolio" class="hover:text-titanium transition-colors duration-300">Portfolio</a>
-					<a href="/blog" class="hover:text-titanium transition-colors duration-300">Blog</a>
-					<a href="/contact" class="px-6 py-2 border border-titanium text-titanium hover:bg-titanium hover:text-white transition-all duration-300 rounded-sm">Start Project</a>
-				</div>
+				
+                <div class="hidden md:flex items-center gap-12">
+                    <div class="flex space-x-12 font-sans text-xs font-bold tracking-[0.2em] uppercase">
+                        <a href="/services" class="hover:text-titanium transition-colors duration-300 relative group">
+                            Services
+                            <span class="absolute -bottom-2 left-0 w-0 h-[1px] bg-titanium transition-all duration-300 group-hover:w-full"></span>
+                        </a>
+                        <a href="/portfolio" class="hover:text-titanium transition-colors duration-300 relative group">
+                            Portfolio
+                            <span class="absolute -bottom-2 left-0 w-0 h-[1px] bg-titanium transition-all duration-300 group-hover:w-full"></span>
+                        </a>
+                        <a href="/blog" class="hover:text-titanium transition-colors duration-300 relative group">
+                            Insights
+                            <span class="absolute -bottom-2 left-0 w-0 h-[1px] bg-titanium transition-all duration-300 group-hover:w-full"></span>
+                        </a>
+                    </div>
+                    <a href="/contact" class="px-8 py-3 border border-white/20 text-xs font-bold tracking-[0.2em] uppercase hover:bg-white hover:text-black transition-all duration-300">
+                        Start Project
+                    </a>
+                </div>
 			</div>
 		</nav>
 
-		<main class="pt-24 min-h-screen">
+		<main>
 			<slot />
 		</main>
 
-		<footer class="border-t border-white/5 bg-black/50 backdrop-blur-sm py-12 mt-20">
-			<div class="max-w-7xl mx-auto px-6 grid grid-cols-1 md:grid-cols-4 gap-12">
-				<div class="col-span-1 md:col-span-2">
-					<h3 class="text-2xl font-display font-bold mb-4">TITAN<span class="text-titanium">.DIGITAL</span></h3>
-					<p class="text-gray-400 max-w-md">我們不只建構網站，我們創造數位體驗。為您的品牌注入未來基因，打造超越時代的數位資產。</p>
+		<footer class="border-t border-white/5 bg-black py-20 mt-32">
+			<div class="container mx-auto px-6">
+                <div class="flex flex-col md:flex-row justify-between items-start md:items-end mb-20">
+                    <h2 class="text-[12vw] leading-[0.8] font-display font-bold text-white/10 select-none pointer-events-none">
+                        TITAN
+                    </h2>
+                    <div class="flex flex-col gap-4 mt-8 md:mt-0 text-right">
+                        <a href="mailto:hello@titan.digital" class="text-2xl md:text-4xl font-sans font-light hover:text-titanium transition-colors">hello@titan.digital</a>
+                        <p class="text-gray-500">Taipei, Taiwan</p>
+                    </div>
+                </div>
+                
+				<div class="flex flex-col md:flex-row justify-between items-center pt-8 border-t border-white/10 text-xs text-gray-600 font-mono uppercase tracking-widest">
+					<p>&copy; {new Date().getFullYear()} Titan Digital.</p>
+                    <div class="flex gap-8 mt-4 md:mt-0">
+                        <a href="#" class="hover:text-white transition-colors">Instagram</a>
+                        <a href="#" class="hover:text-white transition-colors">LinkedIn</a>
+                        <a href="#" class="hover:text-white transition-colors">GitHub</a>
+                    </div>
 				</div>
-				<div>
-					<h4 class="font-bold mb-4 text-white">SITEMAP</h4>
-					<ul class="space-y-2 text-gray-400">
-						<li><a href="/services" class="hover:text-titanium transition-colors">Services</a></li>
-						<li><a href="/portfolio" class="hover:text-titanium transition-colors">Portfolio</a></li>
-						<li><a href="/blog" class="hover:text-titanium transition-colors">Blog</a></li>
-					</ul>
-				</div>
-				<div>
-					<h4 class="font-bold mb-4 text-white">CONTACT</h4>
-					<ul class="space-y-2 text-gray-400">
-						<li>hello@titan.digital</li>
-						<li>Taipei, Taiwan</li>
-					</ul>
-				</div>
-			</div>
-			<div class="max-w-7xl mx-auto px-6 mt-12 pt-8 border-t border-white/5 text-center text-gray-600 text-sm">
-				&copy; {new Date().getFullYear()} Titan Digital. All rights reserved.
 			</div>
 		</footer>
 	</body>

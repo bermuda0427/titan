@@ -1,0 +1,166 @@
+<canvas id="particle-canvas" class="absolute inset-0 w-full h-full pointer-events-none z-0 mix-blend-screen"></canvas>
+
+<script>
+  class ParticleSystem {
+    canvas: HTMLCanvasElement;
+    ctx: CanvasRenderingContext2D;
+    particles: Particle[];
+    width: number;
+    height: number;
+    mouseX: number;
+    mouseY: number;
+
+    constructor() {
+      this.canvas = document.getElementById('particle-canvas') as HTMLCanvasElement;
+      this.ctx = this.canvas.getContext('2d')!;
+      this.particles = [];
+      this.width = window.innerWidth;
+      this.height = window.innerHeight;
+      this.mouseX = 0;
+      this.mouseY = 0;
+
+      this.init();
+      this.animate();
+      this.addEventListeners();
+    }
+
+    init() {
+      this.resize();
+      // Create particles
+      const particleCount = Math.min(window.innerWidth * 0.1, 150); // Responsive count
+      for (let i = 0; i < particleCount; i++) {
+        this.particles.push(new Particle(this.width, this.height));
+      }
+    }
+
+    resize() {
+      this.width = window.innerWidth;
+      this.height = window.innerHeight;
+      this.canvas.width = this.width;
+      this.canvas.height = this.height;
+    }
+
+    addEventListeners() {
+      window.addEventListener('resize', () => this.resize());
+      window.addEventListener('mousemove', (e) => {
+        this.mouseX = e.clientX;
+        this.mouseY = e.clientY;
+      });
+    }
+
+    animate() {
+      this.ctx.clearRect(0, 0, this.width, this.height);
+      
+      this.particles.forEach(particle => {
+        particle.update(this.mouseX, this.mouseY);
+        particle.draw(this.ctx);
+      });
+
+      // Draw connections
+      this.drawConnections();
+
+      requestAnimationFrame(() => this.animate());
+    }
+
+    drawConnections() {
+      const maxDistance = 150;
+      for (let i = 0; i < this.particles.length; i++) {
+        for (let j = i + 1; j < this.particles.length; j++) {
+          const dx = this.particles[i].x - this.particles[j].x;
+          const dy = this.particles[i].y - this.particles[j].y;
+          const distance = Math.sqrt(dx * dx + dy * dy);
+
+          if (distance < maxDistance) {
+            const opacity = 1 - (distance / maxDistance);
+            this.ctx.beginPath();
+            this.ctx.strokeStyle = `rgba(59, 130, 246, ${opacity * 0.2})`; // Titanium Blue with low opacity
+            this.ctx.lineWidth = 1;
+            this.ctx.moveTo(this.particles[i].x, this.particles[i].y);
+            this.ctx.lineTo(this.particles[j].x, this.particles[j].y);
+            this.ctx.stroke();
+          }
+        }
+      }
+    }
+  }
+
+  class Particle {
+    x: number;
+    y: number;
+    vx: number;
+    vy: number;
+    size: number;
+    baseX: number;
+    baseY: number;
+    density: number;
+
+    constructor(width: number, height: number) {
+      this.x = Math.random() * width;
+      this.y = Math.random() * height;
+      this.vx = (Math.random() - 0.5) * 0.5;
+      this.vy = (Math.random() - 0.5) * 0.5;
+      this.size = Math.random() * 2 + 1;
+      this.baseX = this.x;
+      this.baseY = this.y;
+      this.density = (Math.random() * 30) + 1;
+    }
+
+    update(mouseX: number, mouseY: number) {
+      this.x += this.vx;
+      this.y += this.vy;
+
+      // Mouse interaction
+      const dx = mouseX - this.x;
+      const dy = mouseY - this.y;
+      const distance = Math.sqrt(dx * dx + dy * dy);
+      const forceDirectionX = dx / distance;
+      const forceDirectionY = dy / distance;
+      const maxDistance = 100;
+      const force = (maxDistance - distance) / maxDistance;
+
+      if (distance < maxDistance) {
+        this.x -= forceDirectionX * force * this.density;
+        this.y -= forceDirectionY * force * this.density;
+      }
+
+      // Screen wrapping
+      if (this.x < 0) this.x = window.innerWidth;
+      if (this.x > window.innerWidth) this.x = 0;
+      if (this.y < 0) this.y = window.innerHeight;
+      if (this.y > window.innerHeight) this.y = 0;
+    }
+
+    draw(ctx: CanvasRenderingContext2D) {
+      ctx.beginPath();
+      ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+      ctx.fillStyle = 'rgba(96, 165, 250, 0.8)'; // Titanium Glow
+      ctx.fill();
+    }
+  }
+
+  // Initialize on load and view transitions
+  document.addEventListener('astro:page-load', () => {
+    const canvas = document.getElementById('particle-canvas');
+    if (canvas) {
+        // Check if instance already exists to prevent duplicates
+        if (!(window as any).particleSystemInstance) {
+             (window as any).particleSystemInstance = new ParticleSystem();
+        }
+    }
+  });
+  
+  // Fallback for initial load
+  if (document.readyState === 'complete') {
+      const canvas = document.getElementById('particle-canvas');
+      if (canvas && !(window as any).particleSystemInstance) {
+          (window as any).particleSystemInstance = new ParticleSystem();
+      }
+  } else {
+      window.addEventListener('load', () => {
+          const canvas = document.getElementById('particle-canvas');
+          if (canvas && !(window as any).particleSystemInstance) {
+              (window as any).particleSystemInstance = new ParticleSystem();
+          }
+      });
+  }
+</script>

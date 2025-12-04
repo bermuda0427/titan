@@ -62,7 +62,7 @@
     left: -50%;
     width: 200%;
     height: 200%;
-    background-image: url('/images/noise-texture.png');
+    background-image: url('/titan/images/noise-texture.png');
     background-repeat: repeat;
     opacity: 0.03;
     pointer-events: none;

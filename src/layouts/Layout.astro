@@ -1,0 +1,74 @@
+---
+import { ClientRouter } from 'astro:transitions';
+import '../styles/global.css';
+import '@fontsource/space-grotesk';
+import '@fontsource/sarpanch';
+
+interface Props {
+	title: string;
+}
+
+const { title } = Astro.props;
+---
+
+<!doctype html>
+<html lang="zh-TW" class="dark">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="description" content="鈦宇數位 - 為您的品牌注入未來基因" />
+		<meta name="viewport" content="width=device-width" />
+		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+		<meta name="generator" content={Astro.generator} />
+		<title>{title} | 鈦宇數位 Titan Digital</title>
+		<ClientRouter />
+	</head>
+	<body class="bg-void text-starlight overflow-x-hidden selection:bg-titanium selection:text-white">
+		<div class="fixed inset-0 z-[-1] bg-[url('/images/hero-bg.png')] bg-cover bg-center opacity-20 pointer-events-none mix-blend-screen"></div>
+		<div class="fixed inset-0 z-[-1] bg-gradient-to-b from-void via-transparent to-void pointer-events-none"></div>
+		
+		<nav class="fixed top-0 w-full z-50 glass-panel border-b border-white/5 px-6 py-4">
+			<div class="max-w-7xl mx-auto flex justify-between items-center">
+				<a href="/" class="text-2xl font-display font-bold tracking-wider text-white hover:text-titanium transition-colors duration-300">
+					TITAN<span class="text-titanium">.DIGITAL</span>
+				</a>
+				<div class="hidden md:flex space-x-8 font-sans text-sm tracking-widest uppercase">
+					<a href="/services" class="hover:text-titanium transition-colors duration-300">Services</a>
+					<a href="/portfolio" class="hover:text-titanium transition-colors duration-300">Portfolio</a>
+					<a href="/blog" class="hover:text-titanium transition-colors duration-300">Blog</a>
+					<a href="/contact" class="px-6 py-2 border border-titanium text-titanium hover:bg-titanium hover:text-white transition-all duration-300 rounded-sm">Start Project</a>
+				</div>
+			</div>
+		</nav>
+
+		<main class="pt-24 min-h-screen">
+			<slot />
+		</main>
+
+		<footer class="border-t border-white/5 bg-black/50 backdrop-blur-sm py-12 mt-20">
+			<div class="max-w-7xl mx-auto px-6 grid grid-cols-1 md:grid-cols-4 gap-12">
+				<div class="col-span-1 md:col-span-2">
+					<h3 class="text-2xl font-display font-bold mb-4">TITAN<span class="text-titanium">.DIGITAL</span></h3>
+					<p class="text-gray-400 max-w-md">我們不只建構網站，我們創造數位體驗。為您的品牌注入未來基因，打造超越時代的數位資產。</p>
+				</div>
+				<div>
+					<h4 class="font-bold mb-4 text-white">SITEMAP</h4>
+					<ul class="space-y-2 text-gray-400">
+						<li><a href="/services" class="hover:text-titanium transition-colors">Services</a></li>
+						<li><a href="/portfolio" class="hover:text-titanium transition-colors">Portfolio</a></li>
+						<li><a href="/blog" class="hover:text-titanium transition-colors">Blog</a></li>
+					</ul>
+				</div>
+				<div>
+					<h4 class="font-bold mb-4 text-white">CONTACT</h4>
+					<ul class="space-y-2 text-gray-400">
+						<li>hello@titan.digital</li>
+						<li>Taipei, Taiwan</li>
+					</ul>
+				</div>
+			</div>
+			<div class="max-w-7xl mx-auto px-6 mt-12 pt-8 border-t border-white/5 text-center text-gray-600 text-sm">
+				&copy; {new Date().getFullYear()} Titan Digital. All rights reserved.
+			</div>
+		</footer>
+	</body>
+</html>

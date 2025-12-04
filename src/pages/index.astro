@@ -1,0 +1,123 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Card from '../components/Card.astro';
+import Button from '../components/Button.astro';
+import { ArrowRight, Code, Palette, Rocket } from 'lucide-react';
+---
+
+<Layout title="Home">
+	<!-- Hero Section -->
+	<section class="relative min-h-screen flex items-center justify-center overflow-hidden pt-20">
+		<div class="absolute inset-0 z-0">
+			<div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-titanium/20 rounded-full blur-[120px] animate-pulse-glow"></div>
+			<div class="absolute top-1/3 left-1/3 w-[500px] h-[500px] bg-horizon/20 rounded-full blur-[100px] animate-float"></div>
+		</div>
+
+		<div class="container mx-auto px-6 relative z-10 text-center">
+			<h1 class="text-6xl md:text-8xl lg:text-9xl font-display font-bold mb-8 leading-tight">
+				<span class="block text-transparent bg-clip-text bg-gradient-to-b from-white to-white/50">FUTURE</span>
+				<span class="block text-gradient">PROOF</span>
+				<span class="block text-transparent bg-clip-text bg-gradient-to-b from-white to-white/50">DIGITAL</span>
+			</h1>
+			<p class="text-xl md:text-2xl text-gray-400 max-w-2xl mx-auto mb-12 font-light tracking-wide">
+				我們不只建構網站，我們創造數位體驗。<br/>
+				<span class="text-titanium">鈦宇數位</span> 為您的品牌注入未來基因。
+			</p>
+			<div class="flex flex-col md:flex-row gap-6 justify-center items-center">
+				<Button href="/contact" variant="primary">
+					Start Project <ArrowRight className="w-5 h-5" />
+				</Button>
+				<Button href="/portfolio" variant="outline">
+					View Our Work
+				</Button>
+			</div>
+		</div>
+
+		<!-- Scroll Indicator -->
+		<div class="absolute bottom-10 left-1/2 -translate-x-1/2 animate-bounce text-gray-500">
+			<div class="w-6 h-10 border-2 border-gray-500 rounded-full flex justify-center pt-2">
+				<div class="w-1 h-2 bg-gray-500 rounded-full animate-scroll"></div>
+			</div>
+		</div>
+	</section>
+
+	<!-- Services Preview -->
+	<section class="py-32 relative">
+		<div class="container mx-auto px-6">
+			<div class="flex flex-col md:flex-row justify-between items-end mb-20">
+				<div>
+					<h2 class="text-4xl md:text-6xl font-display font-bold mb-4">OUR <span class="text-gradient">EXPERTISE</span></h2>
+					<p class="text-gray-400 max-w-md">融合頂尖技術與前衛設計，打造無可取代的數位資產。</p>
+				</div>
+				<a href="/services" class="hidden md:block text-titanium hover:text-white transition-colors font-bold tracking-widest uppercase mt-8 md:mt-0">
+					All Services →
+				</a>
+			</div>
+
+			<div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+				<Card
+					title="Immersive Web Design"
+					body="打破傳統網格，運用 WebGL 與動態視差，創造令人屏息的沉浸式視覺體驗。"
+					icon="🎨"
+					href="/services#design"
+				/>
+				<Card
+					title="High-Performance Dev"
+					body="採用 Astro 與 Next.js 等現代化框架，確保極致的載入速度與 SEO 表現。"
+					icon="⚡"
+					href="/services#dev"
+				/>
+				<Card
+					title="Headless CMS"
+					body="整合 Strapi 或 Sanity，賦予您完全的內容掌控權，管理後台從此不再痛苦。"
+					icon="🛠️"
+					href="/services#cms"
+				/>
+			</div>
+		</div>
+	</section>
+
+	<!-- Featured Work -->
+	<section class="py-32 bg-black/20 relative overflow-hidden">
+		<div class="container mx-auto px-6">
+			<h2 class="text-4xl md:text-6xl font-display font-bold mb-20 text-center">SELECTED <span class="text-gradient">WORKS</span></h2>
+			
+			<div class="space-y-32">
+				<!-- Project 1 -->
+				<div class="group relative grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+					<div class="relative aspect-video rounded-lg overflow-hidden border border-white/10 group-hover:border-titanium/50 transition-colors duration-500">
+						<div class="absolute inset-0 bg-titanium/20 mix-blend-overlay z-10 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+						<img src="/images/portfolio-cover-1.png" alt="Project Alpha" class="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-700" />
+					</div>
+					<div class="order-2 md:order-1">
+						<div class="text-titanium font-mono text-sm mb-4">01 / FINTECH</div>
+						<h3 class="text-4xl font-display font-bold mb-6 group-hover:text-gradient transition-all">Project Alpha</h3>
+						<p class="text-gray-400 mb-8 leading-relaxed">
+							為新一代金融科技公司打造的形象網站。運用大量的數據視覺化與 3D 互動元素，將複雜的金融概念轉化為直觀的視覺體驗。
+						</p>
+						<ul class="flex flex-wrap gap-4 mb-8 text-sm text-gray-500 font-mono">
+							<li class="border border-white/10 px-3 py-1 rounded-full">React</li>
+							<li class="border border-white/10 px-3 py-1 rounded-full">Three.js</li>
+							<li class="border border-white/10 px-3 py-1 rounded-full">GSAP</li>
+						</ul>
+						<Button href="/portfolio/project-alpha" variant="outline">View Case Study</Button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</section>
+
+	<!-- CTA Section -->
+	<section class="py-32 relative flex items-center justify-center overflow-hidden">
+		<div class="absolute inset-0 bg-gradient-to-r from-titanium/10 to-horizon/10"></div>
+		<div class="container mx-auto px-6 text-center relative z-10">
+			<h2 class="text-5xl md:text-7xl font-display font-bold mb-8">READY TO <span class="text-gradient">LAUNCH?</span></h2>
+			<p class="text-xl text-gray-400 mb-12 max-w-2xl mx-auto">
+				您的品牌值得擁有一個與眾不同的數位門面。讓我們一起探索未知的可能性。
+			</p>
+			<Button href="/contact" variant="primary" class="text-lg px-12 py-6">
+				Start Your Journey
+			</Button>
+		</div>
+	</section>
+</Layout>

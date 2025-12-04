@@ -1,0 +1,93 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Button from '../components/Button.astro';
+import { Monitor, Server, PenTool, BarChart } from 'lucide-react';
+
+const services = [
+  {
+    id: 'design',
+    title: 'Immersive Web Design',
+    description: '我們不使用模板。每一個像素、每一個動畫都經過精心雕琢，旨在傳達您獨特的品牌故事。我們運用 WebGL、GSAP 等先進技術，創造出令人難忘的沉浸式體驗。',
+    icon: Monitor,
+    features: ['UI/UX Design', '3D Interactions', 'Motion Graphics', 'Brand Identity']
+  },
+  {
+    id: 'dev',
+    title: 'High-Performance Development',
+    description: '速度就是金錢。我們採用 Astro、Next.js 等現代化框架，確保您的網站在任何設備上都能瞬間載入。乾淨的程式碼架構，讓維護與擴充變得輕而易舉。',
+    icon: Server,
+    features: ['Static Site Generation (SSG)', 'Server-Side Rendering (SSR)', 'API Integration', 'Performance Optimization']
+  },
+  {
+    id: 'cms',
+    title: 'Headless CMS Solutions',
+    description: '告別臃腫的 WordPress。我們為您建置客製化的 Headless CMS (如 Strapi, Sanity)，讓內容管理變得直觀、靈活且安全。您專注於創作，技術交給我們。',
+    icon: PenTool,
+    features: ['Custom Content Modeling', 'Multi-channel Publishing', 'Role-based Access', 'Automated Workflows']
+  },
+  {
+    id: 'seo',
+    title: 'Technical SEO & Analytics',
+    description: '漂亮的網站如果沒人看見就沒有意義。我們從架構層面優化 SEO，並整合進階數據分析工具，讓您精準掌握流量來源與用戶行為。',
+    icon: BarChart,
+    features: ['Core Web Vitals Optimization', 'Structured Data (Schema.org)', 'Conversion Tracking', 'Performance Audits']
+  }
+];
+---
+
+<Layout title="Services">
+  <section class="pt-32 pb-20 relative overflow-hidden">
+    <div class="container mx-auto px-6 relative z-10">
+      <h1 class="text-6xl md:text-8xl font-display font-bold mb-8 text-center">
+        OUR <span class="text-gradient">SERVICES</span>
+      </h1>
+      <p class="text-xl text-gray-400 max-w-3xl mx-auto text-center mb-20">
+        全方位的數位解決方案，從視覺設計到後端架構，我們為您打造堅不可摧的數位堡壘。
+      </p>
+
+      <div class="grid grid-cols-1 gap-20">
+        {services.map((service, index) => (
+          <div id={service.id} class={`flex flex-col md:flex-row gap-12 items-center ${index % 2 === 1 ? 'md:flex-row-reverse' : ''}`}>
+            <div class="flex-1 relative group">
+              <div class="absolute inset-0 bg-gradient-to-r from-titanium/20 to-horizon/20 rounded-2xl blur-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+              <div class="relative bg-white/5 border border-white/10 rounded-2xl p-12 backdrop-blur-sm hover:border-titanium/50 transition-colors duration-300">
+                <service.icon className="w-16 h-16 text-titanium mb-6" />
+                <h3 class="text-3xl font-display font-bold mb-4">{service.title}</h3>
+                <p class="text-gray-400 leading-relaxed mb-8">
+                  {service.description}
+                </p>
+                <ul class="grid grid-cols-2 gap-4">
+                  {service.features.map(feature => (
+                    <li class="flex items-center text-sm font-mono text-gray-300">
+                      <span class="w-2 h-2 bg-titanium rounded-full mr-3"></span>
+                      {feature}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </div>
+            <div class="flex-1">
+               <img 
+                src={`/images/service-${service.id === 'seo' ? 'cms' : service.id === 'design' ? 'web-design' : service.id === 'dev' ? 'frontend' : 'cms'}.png`} 
+                alt={service.title} 
+                class="rounded-2xl shadow-2xl border border-white/10 hover:scale-105 transition-transform duration-500"
+              />
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+  
+  <section class="py-20 text-center">
+      <div class="container mx-auto px-6">
+          <div class="bg-gradient-to-r from-titanium/10 to-horizon/10 rounded-3xl p-12 border border-white/10">
+              <h2 class="text-4xl font-display font-bold mb-6">Not sure what you need?</h2>
+              <p class="text-gray-400 mb-8 max-w-2xl mx-auto">
+                  每個專案都是獨一無二的。讓我們聊聊您的目標，我們會為您規劃最適合的技術方案。
+              </p>
+              <Button href="/contact" variant="primary">Schedule a Consultation</Button>
+          </div>
+      </div>
+  </section>
+</Layout>

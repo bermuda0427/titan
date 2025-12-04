@@ -1,0 +1,67 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Button from '../components/Button.astro';
+
+const projects = [
+  {
+    title: 'Project Alpha',
+    category: 'Fintech',
+    image: '/images/portfolio-cover-1.png',
+    description: '為新一代金融科技公司打造的形象網站。運用大量的數據視覺化與 3D 互動元素。',
+    tags: ['React', 'Three.js', 'GSAP']
+  },
+  {
+    title: 'Neon Genesis',
+    category: 'E-Commerce',
+    image: '/images/hero-bg.png',
+    description: '一個專注於賽博龐克風格服飾的電商平台。極致的黑夜模式與流暢的購物體驗。',
+    tags: ['Next.js', 'Shopify', 'Tailwind']
+  },
+  {
+    title: 'Orbital Flow',
+    category: 'SaaS',
+    image: '/images/service-frontend.png',
+    description: '協助專案管理工具 Orbital Flow 進行品牌重塑與產品介面優化。',
+    tags: ['Vue', 'Nuxt', 'Design System']
+  }
+];
+---
+
+<Layout title="Portfolio">
+  <section class="pt-32 pb-20">
+    <div class="container mx-auto px-6 text-center">
+      <h1 class="text-6xl md:text-8xl font-display font-bold mb-8">
+        SELECTED <span class="text-gradient">WORKS</span>
+      </h1>
+      <p class="text-xl text-gray-400 max-w-2xl mx-auto mb-20">
+        我們引以為傲的數位工藝品。每一個案例都代表著一次突破與創新。
+      </p>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-12">
+        {projects.map((project) => (
+          <div class="group relative block">
+            <div class="relative aspect-[4/3] rounded-xl overflow-hidden mb-6 border border-white/10 group-hover:border-titanium/50 transition-colors duration-500">
+              <div class="absolute inset-0 bg-titanium/20 mix-blend-overlay z-10 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+              <img src={project.image} alt={project.title} class="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-700" />
+              
+              <div class="absolute bottom-0 left-0 w-full p-8 bg-gradient-to-t from-black/90 to-transparent translate-y-full group-hover:translate-y-0 transition-transform duration-500 z-20">
+                 <Button href="#" variant="outline" class="w-full">View Case Study</Button>
+              </div>
+            </div>
+            
+            <div class="text-left">
+                <div class="text-titanium font-mono text-sm mb-2">{project.category}</div>
+                <h3 class="text-3xl font-display font-bold mb-3 group-hover:text-white transition-colors">{project.title}</h3>
+                <p class="text-gray-400 mb-4 line-clamp-2">{project.description}</p>
+                <div class="flex gap-3">
+                    {project.tags.map(tag => (
+                        <span class="text-xs font-mono border border-white/10 px-2 py-1 rounded text-gray-500">{tag}</span>
+                    ))}
+                </div>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+</Layout>

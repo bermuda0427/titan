@@ -1,0 +1,28 @@
+---
+interface Props {
+	title: string;
+	body: string;
+	href?: string;
+    icon?: string;
+}
+
+const { href, title, body, icon } = Astro.props;
+---
+
+<div class="group relative p-1 rounded-xl bg-gradient-to-br from-white/10 to-white/0 hover:from-titanium/50 hover:to-horizon/50 transition-all duration-500">
+    <div class="absolute inset-0 bg-gradient-to-br from-titanium/20 to-horizon/20 opacity-0 group-hover:opacity-100 blur-xl transition-opacity duration-500 rounded-xl"></div>
+    <div class="relative h-full bg-void/90 backdrop-blur-xl border border-white/10 rounded-lg p-8 flex flex-col transition-transform duration-500 group-hover:-translate-y-1">
+        {icon && <div class="mb-6 text-titanium text-4xl group-hover:scale-110 transition-transform duration-300">{icon}</div>}
+        <h3 class="text-xl font-display font-bold mb-3 text-white group-hover:text-titanium transition-colors">
+            {title}
+        </h3>
+        <p class="text-gray-400 leading-relaxed mb-6 flex-grow">
+            {body}
+        </p>
+        {href && (
+            <a href={href} class="inline-flex items-center text-sm font-bold tracking-widest uppercase text-titanium hover:text-white transition-colors">
+                Learn More <span class="ml-2 group-hover:translate-x-1 transition-transform">→</span>
+            </a>
+        )}
+    </div>
+</div>

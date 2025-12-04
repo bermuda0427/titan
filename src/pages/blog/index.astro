@@ -1,0 +1,58 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import { getCollection } from 'astro:content';
+import { Calendar, User } from 'lucide-react';
+
+const posts = (await getCollection('blog')).sort(
+	(a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf()
+);
+---
+
+<Layout title="Blog">
+	<section class="pt-32 pb-20">
+		<div class="container mx-auto px-6">
+			<h1 class="text-6xl md:text-8xl font-display font-bold mb-8 text-center">
+				INSIGHTS <span class="text-gradient">& NEWS</span>
+			</h1>
+			<p class="text-xl text-gray-400 max-w-2xl mx-auto mb-20 text-center">
+				分享關於網頁設計、前端技術與數位趨勢的深度觀點。
+			</p>
+
+			<div class="grid grid-cols-1 md:grid-cols-2 gap-12">
+				{posts.map((post) => (
+					<a href={`/blog/${post.slug}/`} class="group block">
+						<div class="relative aspect-video rounded-xl overflow-hidden mb-6 border border-white/10 group-hover:border-titanium/50 transition-colors duration-500">
+							<div class="absolute inset-0 bg-titanium/20 mix-blend-overlay z-10 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+							{post.data.heroImage && (
+								<img width={720} height={360} src={post.data.heroImage} alt="" class="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-700" />
+							)}
+						</div>
+						
+						<div class="flex items-center gap-4 text-sm text-gray-500 font-mono mb-3">
+							<span class="flex items-center gap-1">
+								<Calendar className="w-4 h-4" />
+								{post.data.pubDate.toLocaleDateString('zh-TW')}
+							</span>
+							<span class="flex items-center gap-1">
+								<User className="w-4 h-4" />
+								{post.data.author}
+							</span>
+						</div>
+
+						<h2 class="text-3xl font-display font-bold mb-3 group-hover:text-titanium transition-colors">
+							{post.data.title}
+						</h2>
+						<p class="text-gray-400 line-clamp-2 mb-4">
+							{post.data.description}
+						</p>
+                        <div class="flex gap-2">
+                            {post.data.tags.map(tag => (
+                                <span class="text-xs font-mono border border-white/10 px-2 py-1 rounded text-titanium/80">{tag}</span>
+                            ))}
+                        </div>
+					</a>
+				))}
+			</div>
+		</div>
+	</section>
+</Layout>

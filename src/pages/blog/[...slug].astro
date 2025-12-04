@@ -1,0 +1,57 @@
+---
+import { type CollectionEntry, getCollection } from 'astro:content';
+import Layout from '../../layouts/Layout.astro';
+import { Calendar, User, ArrowLeft } from 'lucide-react';
+
+export async function getStaticPaths() {
+	const posts = await getCollection('blog');
+	return posts.map((post) => ({
+		params: { slug: post.slug },
+		props: post,
+	}));
+}
+type Props = CollectionEntry<'blog'>;
+
+const post = Astro.props;
+const { Content } = await post.render();
+---
+
+<Layout title={post.data.title}>
+	<article class="pt-32 pb-20">
+		<div class="container mx-auto px-6 max-w-4xl">
+            <a href="/blog" class="inline-flex items-center text-gray-500 hover:text-titanium mb-8 transition-colors group">
+                <ArrowLeft className="w-4 h-4 mr-2 group-hover:-translate-x-1 transition-transform" /> Back to Blog
+            </a>
+
+			<div class="relative aspect-video rounded-2xl overflow-hidden mb-12 border border-white/10 shadow-2xl">
+				{post.data.heroImage && (
+					<img width={1020} height={510} src={post.data.heroImage} alt="" class="w-full h-full object-cover" />
+				)}
+                <div class="absolute inset-0 bg-gradient-to-t from-void via-transparent to-transparent opacity-60"></div>
+			</div>
+
+			<div class="mb-12 text-center">
+                <div class="flex justify-center gap-6 text-sm text-gray-400 font-mono mb-6">
+                    <span class="flex items-center gap-2">
+                        <Calendar className="w-4 h-4 text-titanium" />
+                        {post.data.pubDate.toLocaleDateString('zh-TW')}
+                    </span>
+                    <span class="flex items-center gap-2">
+                        <User className="w-4 h-4 text-titanium" />
+                        {post.data.author}
+                    </span>
+                </div>
+				<h1 class="text-4xl md:text-6xl font-display font-bold mb-6 leading-tight">{post.data.title}</h1>
+                <div class="flex justify-center gap-3">
+                    {post.data.tags.map(tag => (
+                        <span class="text-sm font-mono border border-titanium/30 bg-titanium/10 px-3 py-1 rounded-full text-titanium">{tag}</span>
+                    ))}
+                </div>
+			</div>
+
+			<div class="prose prose-invert prose-lg max-w-none prose-headings:font-display prose-headings:text-white prose-a:text-titanium prose-img:rounded-xl prose-strong:text-white">
+				<Content />
+			</div>
+		</div>
+	</article>
+</Layout>
